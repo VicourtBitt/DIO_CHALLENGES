@@ -29,7 +29,6 @@ def sistema_bancario():
             _comando()
 
         
-
 def _verificar_valor(operacao=str):
         """Função responsável pela verificação do valor"""
         clean_terminal()
