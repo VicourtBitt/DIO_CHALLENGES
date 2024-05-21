@@ -43,9 +43,12 @@ def verificar_valor(operacao=str):
 
             try:
                 valor_operacao = float(valor_operacao)
+                if valor_operacao < 0:
+                    raise ValueError
+                
             except ValueError:
                 clean_terminal()
-                print("O valor a ser depositado precisa ser um número real.")
+                print("O valor a ser depositado precisa ser um número positivo e real.")
                 continue
             break
         return (operacao, valor_operacao)
