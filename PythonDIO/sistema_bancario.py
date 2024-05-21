@@ -1,49 +1,48 @@
 import sys
 from CleanTerminalModule import clean_terminal
 
-operacoes_feitas = []
-saldo_total = 0
-SAQUES_MAX = 3
-VALOR_SAQUES = 500.00
+_operacoes_feitas = []
+_saldo_total = 0
+_SAQUES_MAX = 3
+_VALOR_SAQUES = 500.00
 
 
 def sistema_bancario():
-    global saldo_total
-    lista_de_operacoes = {
-        "saque" : lambda:sacar(),
-        "deposito" : lambda:depositar(),
-        "extrato" : lambda:ver_extrato(),
+    global _saldo_total
+    _lista_de_operacoes = {
+        "saque" : lambda:_sacar(),
+        "deposito" : lambda:_depositar(),
+        "extrato" : lambda:_ver_extrato(),
         "sair" : lambda:sys.exit("Saindo do sistema"),
         "erro" : lambda:print("Algum erro ocorreu, tente novamente.")
 }
     print("Seja bem vindo ao sistema bancário VicourtBitt. ")
 
     while True:
-        operacao_bancaria = input("Digite o que deseja realizar [Saque]-[Deposito]-[Extrato]-[Sair]: ") 
-        
+        _operacao_bancaria = input("Digite o que deseja realizar [Saque]-[Deposito]-[Extrato]-[Sair]: ") 
         try:
-            comando = lista_de_operacoes[operacao_bancaria.lower()]
-            comando()
+            _comando = _lista_de_operacoes[_operacao_bancaria.lower()]
+            _comando()
         except (KeyError, ValueError):
             clean_terminal()
-            comando = lista_de_operacoes["erro"]
-            comando()
+            _comando = _lista_de_operacoes["erro"]
+            _comando()
 
         
 
-def verificar_valor(operacao=str):
+def _verificar_valor(operacao=str):
         """Função responsável pela verificação do valor"""
         clean_terminal()
         while True:
             print(f"A operação é {operacao}")
-            valor_operacao = input("Digite o valor que deseja inserir/sacar: R$")
+            _valor_operacao = input("Digite o valor que deseja inserir/sacar: R$")
 
-            if valor_operacao.lower() == "sair":
+            if _valor_operacao.lower() == "sair":
                 return "falsy"
 
             try:
-                valor_operacao = float(valor_operacao)
-                if valor_operacao < 0:
+                _valor_operacao = float(_valor_operacao)
+                if _valor_operacao < 0:
                     raise ValueError
                 
             except ValueError:
@@ -51,60 +50,59 @@ def verificar_valor(operacao=str):
                 print("O valor a ser depositado precisa ser um número positivo e real.")
                 continue
             break
-        return (operacao, valor_operacao)
+        return (operacao, _valor_operacao)
 
 
-def sacar():
+def _sacar():
     """Função para sacar valores"""
-    global SAQUES_MAX, VALOR_SAQUES, saldo_total
-    a_sacar = verificar_valor
-    sacando = a_sacar(operacao="Saque")
-    if "falsy" in sacando:
+    global _SAQUES_MAX, _VALOR_SAQUES, _saldo_total
+    _a_sacar = _verificar_valor
+    _sacando = _a_sacar(operacao="Saque")
+    if "falsy" in _sacando:
         ...
     else:
-        if SAQUES_MAX == 0:
+        if _SAQUES_MAX == 0:
             print("Você já atingiu o limite de saques diários. Cancelando operação.")
         
-        elif (VALOR_SAQUES - (sacando[1])) < 0:
+        elif (_VALOR_SAQUES - (_sacando[1])) < 0:
             print("Você já atingiu o limite de valor diário a ser sacado.")
-            print(f"Te restam R${VALOR_SAQUES} para hoje.")
+            print(f"Te restam R${_VALOR_SAQUES} para hoje.")
         
-        elif (saldo_total - (sacando[1])) < 0:
+        elif (_saldo_total - (_sacando[1])) < 0:
             print("Você não possui saldo suficiente.")
 
         else:
-            SAQUES_MAX -= 1
-            VALOR_SAQUES -= sacando[1]
-            operacoes_feitas.append(sacando)
-            saldo_total -= operacoes_feitas[-1][1]
+            _SAQUES_MAX -= 1
+            _VALOR_SAQUES -= _sacando[1]
+            _operacoes_feitas.append(_sacando)
+            _saldo_total -= _operacoes_feitas[-1][1]
 
 
-def depositar():
+def _depositar():
     """Função responsável pelo depósito"""
-    global saldo_total
+    global _saldo_total
             
-    a_depositar = verificar_valor
-    depositando = a_depositar(operacao="Depósito")
-    if "falsy" in depositando:
+    _a_depositar = _verificar_valor
+    _depositando = _a_depositar(operacao="Depósito")
+    if "falsy" in _depositando:
         ...
     else:
-        operacoes_feitas.append(depositando)
-        saldo_total += operacoes_feitas[-1][1]
+        _operacoes_feitas.append(_depositando)
+        _saldo_total += _operacoes_feitas[-1][1]
     
 
-def ver_extrato():
+def _ver_extrato():
     """Função para exibir cada operação realizada."""
-    global saldo_total
+    global _saldo_total
 
     clean_terminal()
     print("============EXTRATO============")
-    for n, (op, vl) in enumerate(operacoes_feitas):
+    for n, (op, vl) in enumerate(_operacoes_feitas):
         print(f"{n}. {op} de R${vl:.2f}")
     print("===============================")
 
     print('\n')
-    print(f"Seu saldo total é R${saldo_total:.2f}")
-
+    print(f"Seu saldo total é R${_saldo_total:.2f}")
 
 
 sistema_bancario()
